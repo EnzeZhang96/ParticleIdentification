@@ -1,0 +1,360 @@
+C===========================================================================
+C===========================================================================
+C  Input card for Super-Kamiokande Monte Carlo simulation
+C===========================================================================
+C===========================================================================
+
+C
+C read VECTOR from text file ; VECT-FILE  2
+C read VECTOR from card      ; VECT-FILE  1
+C read VECTOR from ZBS file  ; VECT-FILE  0
+C read VECTOR from SGGVUS    ; VECT-FILE -1
+C read CONVVECT from file    ; VECT-FILE -2
+C
+
+VECT-FILE 2
+
+
+C===========================================================================
+C     Input card for skdetsim fundamental control parameters(ref:cntlcard.F)
+C===========================================================================
+C
+C     SKCNTL-SKGEOMETRY          Control geometry definition used
+C     (INTEGER*4)          = 1 SUPER-KAMIOKANDE I
+C                          = 2 SUPER-KAMIOKANDE II
+C                          = 3 SUPER-KAMIOKANDE III
+C                          = 4 SUPER-KAMIOKANDE IV
+C
+C     SKCNTL-TRACKPHOTON         Control tracking photons
+C     (INTEGER*4)          = -1 Not track photons at all 
+C                          =  1 Track all photons (old LE tuning) 
+C                          =  2 Apply Q.E. before tracking photons
+C                               and only accepted photons are tracked.
+C                               (old ATMPD tuning)
+C                          =  3 Apply (Q.E./Absorption) before photon tracking
+C                               and only accepted photons are tracked.
+C                               Multi-hit of PMT is taken into account.
+C                          =  4 Same as 3, but use simple photon counting 
+C                               method to save computer memory.
+C                               Multi-hit of PMT is taken into account.
+C
+C     SKCNTL-WATERTUNE            Water Parameter tuning
+C     (INTEGER*4)          = 1  old LE group tuning         
+C                          = 2  old ATMPD group tuning 
+C                          = 3  Unified tuning
+C
+C     SKCNTL-REFLECTIONTUNE      Reflection tuning
+C     (INTEGER*4)          = 1  old LE group tuning     
+C                          = 2  old ATMPD group tuning 
+C                          = 3  Unified tuning 
+C
+C     SKCNTL-DSTUNE              Tuning in DS routines
+C     (INTEGER*4)          = 1  old LE group tuning         
+C                          = 2  old ATMPD group tuning 
+C                          = 3  Unified tuning
+C
+C     SKCNTL-OUTPUTZBS   (LOGICAL)  Save ZBS data
+C     OUTPUT_TYPE        (INTEGER)  For ATMPD group needs some additional bank
+C                          = 1 for LE group (NOT add those banks)
+C                          = 2 for ATMPD group (add those banks)
+C     SKCNTL-OUTPUTHBOOK (INTEGER)  Save HBOOK histograms
+C                          = 0 no HBOOK histograms
+C                          = 1 for track segments records
+C                          = 2 for standard TEST histograms
+C     SKCNTL-OUTPUTTEXT  (LOGICAL)  Save TEXT records (not supported yet)
+C
+C
+C     SKCNTL-TRACKAUTOSW (INTEGER) 
+C                          = 0 (or not set in card)
+C                            If the tracking method is set to 3, 
+C                            Tracking method will change to 4 for over 1TeV neutrino event
+C                            to avoid crash the process due to memory shortage.
+C
+C---------------------------------------------------------------------------
+C Official combination: TRACK/DS
+C SK 1&2  1/1(LE), 2/2(AP)
+C SK 3    1/1(LE), 2/2(AP), 3/3(UNI:now testing) 
+C SK 4    3/3(UNI), 3/4(UNI: very high energy)
+C---------------------------------------------------------------------------
+
+SKCNTL-SKGEOMETRY 4
+SKCNTL-TRACKPHOTON 3
+SKCNTL-DSTUNE 3
+SKCNTL-WATERTUNE 3
+SKCNTL-REFLECTIONTUNE 3
+SKCNTL-OUTPUTZBS TRUE
+SKCNTL-OUTPUTTYPE 2
+SKCNTL-OUTPUTHBOOK 0
+SKCNTL-OUTPUTTEXT FALSE
+SKCNTL-TRACKAUTOSW 1
+
+C     AP-SEGF      : output filename of the HBOOK file for track 
+C                    segments records.
+C                    It is used when SKCNTL-OUTPUTHBOOK = 1.
+
+AP-SEGF 'seg.hbook'
+
+C
+C number of generated event
+C
+
+VECT-NEVT 2000
+
+C
+C seeds for random number generators; three values must be given
+C
+
+VECT-RAND  780811  200004  0  0  0
+
+C
+C If the energy of the particles is high,
+C the gate width for MCRAWTQ is GEGATE.
+C It is only for SK-I,II,III
+
+DS-GEGATE 400.
+
+C
+C If you trace the cherenkov light in ANTI counter
+C
+
+DS-ANTI 1
+
+C
+C The flag of trigger simulation
+C (If you VECT-HIGH 1 , this flag is ignored.)
+C
+
+DS-TRIGSIM 1
+
+C Input card for GEANT control
+C ============================
+C
+
+GEANT-CUTS 0.0001 2.64064E-04
+GEANT-CKOV 2
+GEANT-LOSS 1
+GEANT-AUTO 0
+GEANT-DRAY 0
+GEANT-DCAY 1
+GEANT-ABAN 0
+GEANT-END
+
+C  VECTOR informations used when 'VECT-FILE' is set to 0.
+C
+C VECT-MVTX    Control vertex
+C               = 1   fixed on the position specified by 'VECT-VTX'
+C               = 2   randomly generated
+
+VECT-MVTX 1
+VECT-VTX  0.0 0.0 0.0
+
+CVECT-WALL 200.
+
+C
+C VECT-MDIR    Control directions
+C               = 1   fixed direction set by 'VECT-DIR'
+C               = 2   randomly generated
+VECT-MDIR 1
+VECT-DIR 0. 1. 0.
+
+C VECT-PART    input particle ID
+VECT-PART 13
+
+C VECT-MMOM    Control momentum MeV
+C               = 1   fixed momentum set by the 1st argument of 'VECT-MOM'
+C               = 2   randomly set between p_1 and p_2
+
+VECT-MMOM 1
+VECT-MOM 500.
+
+C
+C
+C Input card for Detector Simulation control
+C ==========================================
+C
+
+
+C Input card for Detector Simulation control
+C ==========================================
+C Toggle for PMT-by-PMT dark noise rate (1: on, 0: off/default)
+C DS-DOPMTDARKRT 1
+
+ccccccccccccccccccccccccccccccccccccccccccccc
+C Filename containing dark noise rates for each PMT
+CDS-PMTNOISEFILE './DarkRates_sk4.dat'
+
+C dark noise rate (default 3 kHz)
+CDS-DARK 4.2
+ccccccccccccccccccccccccccccccccccccccccccccc
+cc Run63277 sub 100~109 (2009/02/18)  4.5*1.271=5.7195
+DS-DARK 5.7195
+ccccccccccccccccccccccccccccccccccccccccccccc
+C discriminator threshold (default 0.2 p.e.)
+DS-DISTHR 0.32
+C
+C trigger threshold in unit of number of hit PMTs (default 30 hit)
+DS-TRGTHR 0.
+C
+C ATM veto for reject reflection (default from 300 to 900 nsec)
+DS-ATMVET 400. 1000.
+C
+C the timing of global trigger (default 800 nsec)
+DS-GLTTIM 800.
+C
+C FULL width of TDC of ANTI detector(ns)
+DS-FULWIDA 16000.
+C
+C T0 of ANTI detector(ns)
+DS-DSANTT0 0.
+C
+C   OD dark rate: wall, bottom, top 
+C these are targets:  3.6, 3.7, 1.9
+DS-DARKDSA 5.4, 4.8, 2.8
+C
+C Quality of ANTI detector (1:Quick / 2:Detail)
+DS-IAGEQAL 2
+C
+C Reflection rate of Tyvek
+DS-DSTYVKRTOP 0.60 0.98
+DS-DSTYVKRBOT 0.85 0.75
+DS-DSTYVKRWAL 0.85 0.90
+DS-DSSEGRTOP 0.95
+DS-DSSEGRBOT 0.85
+C
+
+C
+C Transmission rate for Tyvek
+DS-PROBTT 0.05
+DS-PROBTB 0.07
+
+C
+C Anti detecto3 PMT's collection efficiency
+DS-APMTCOR 0.23
+C
+C Ratio of old and new tube thresholds
+DS-ADSTHRF 0.01
+C
+c Old/new efficiency ratio
+DS-APMTEFR 0.87
+c Top/bottom/side efficiency rato
+DS-APMTEFT 0.87
+DS-APMTEFB 0.85
+DS-APMTEFW 0.77
+
+c Tyvek model
+DS-DSTYVKM 1.0
+C
+C Anti detector Wave length shifter's collection efficiency
+DS-AWLSCOR 0.0065
+C
+C Anti detector discriminator threshold (p.e.)
+DS-ADSCTHR 0.22
+C
+C Anti detector Electronics Dynamic Range (p.e.)
+DS-ADSAPO 1. 0.007  0.0003
+DS-ADSAPN 1. 0.0015 0.0003
+
+C bank writing control
+C (e.g. WRTBANK   TRUE FALSE TRUE .... )
+C
+C           MCPHOTON MCRAWTQ MCRAWTQA  MCTQ    TQ    TQA   TQREAL TQAREAL TQZ
+C
+DS-WRTBANK   FALSE   FALSE   FALSE     FALSE   TRUE  TRUE  TRUE   TRUE    FALSE
+C Flash ADC Bank Control
+DS-WRTFADCBNK FALSE
+
+C - Spe response parameters for old od-tubes (gaussian+plateau)
+DS-GAINPLATEAU 0.9
+DS-GAINFACT 0.72
+DS-ADSCTHR 0.00
+
+DS-ODPHOTON 1
+
+CC  Water tune
+C set period to set water parameters as measured values by laser data
+C added a flag by M. Shiozawa (20090806)
+
+DS-WATERP 200904
+
+C - TOP-BOTTOM ASYMMETRY 
+C Vary the top-bottom asymmetry dependiong as a function on time
+C Working with SK-III & UNI_TUNE
+C  read TBA (top-bottom asym.) from card                ; DS-MTBA   1
+C  read run number for TBA from card                    ; DS-MTBA   2
+C  set defalut value (TBA=0.)
+C   or change in dsinip.F (default)                     ; DS-MTBA   0
+C  read TBA from zbs file in gukine (LOWMC bank : B8mc) ; DS-MTBA  -1
+
+DS-MTBA 1
+DS-TBA 10.03
+
+
+C========================================================================
+C     Input card for ap-specific control (ref. : aprdcd.F)
+C========================================================================
+
+C HADR=  1:FLUKA, 2:GHEISHA, 3:GCALOR(default)
+CAP-HADR 3
+
+C PION= 1:if P(pion)(MeV)>PITHR(default:500), traced by ORIG.
+C Otherwise by GEANT.(default); otherwise: only by GEANT
+C (500 is maximum for NEUT cross sections, PIMOD==1,2)
+CAP-PION 1
+CAP-PITHR 500
+
+C PIMOD=1: if PION=1 then use pion-16O scattering cross sections from NEUT 
+C                         with SGPINTNEUT (SGPINT+Double Charge Exchange)
+C PIMOD=2: if PION=1 then use pion-16O scattering cross sections from NEUT 
+C                         with NEUT-NUCEFF cascade
+C PIMOD=x: use default defined for PION (SGPINT)
+AP-PIMOD 2
+
+C PIFSIVAR=0 : 	QE1.0|AB1.1|CX1.0 (default, tuned)
+C	   1 : 	QE0.6|AB0.7|CX0.5 (1-sig variations...
+C	   2 :	QE0.6|AB0.7|CX1.6
+C	   3 :	QE0.7|AB1.6|CX0.4
+C	   4 : 	QE0.7|AB1.6|CX1.6
+C   	   5 :	QE1.4|AB0.6|CX0.6
+C	   6 :	QE1.3|AB0.7|CX1.6
+C	   7 : 	QE1.5|AB1.5|CX0.4
+C	   8 :	QE1.6|AB1.6|CX1.6
+CAP-PIFSIVAR 0
+
+C Turn Photonuclear on (1) or off (0)
+C It is on by default so change it here.
+C AP-PHONUC 1
+
+C Scale the Photonuclear cross sections
+C 1 = nominal values, 2 would double them, etc.
+C AP-PHONUCSCALE 1.
+
+C skip ISKIP Events before generating events
+CAP-ISKIP
+
+C Verbosity of truth information
+C 0: Less info 
+C 1: Turn on by default, more truth info, including particle matching (note: tracking routines modified) 
+AP-MORETRUTH 1
+
+C     AP-SEGF      : output filename of the HBOOK file for track 
+C                    segments records.
+C                    It is used when SKCNTL-OUTPUTHBOOK = 1.
+AP-SEGF 'seg.hbook'
+
+C Directory containing pitbl*.dat files (originally in skdetsim directory)
+C required for PIMOD >= 1.
+C Default assumes they are in your current working directory
+AP-SKDATDIR '/scratch/t/tanaka/shimpeit/lib/skanada_head_neut5142/skdetsim'
+
+
+C========================================================================
+C     Input card for NEUT-NUCEFF control 
+C                        (ref. :  ${NEUT_ROOT}/src/neutcore/necard.F)
+C========================================================================
+C
+C RAND : random seed
+C      0 : Read RANDOM number from FILE 
+C          (set path via environment variable: RANFILE)
+C      1 : Generating RANDOM SEED from the time
+C
+NEUT-RAND 1
